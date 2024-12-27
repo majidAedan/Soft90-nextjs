@@ -1,82 +1,124 @@
 import * as React from 'react';
 import { FC } from 'react';
 import Card from '@mui/material/Card';
+import Divider from '@mui/material/Divider';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
-import { Apps } from "@/database/Apps.data";
-import Container from "@mui/material/Container";
 import Box from '@mui/material/Box';
 import { AppType } from '@/Types/AppType';
+import { styled } from '@mui/material/styles';
+import CustomizedDialogs from '@/components/Dialog/appDialog'; // Adjust path
 
+const CustomCard = styled(Card)(({ theme }) => ({
+  margin: theme.spacing(2),
+  borderRadius: 8,
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  direction: 'rtl',
+  textAlign: 'right',
 
+}));
 
- const AppCard: FC<AppType> = (data) => {
+const HeaderTypography = styled(Typography)(({ theme }) => ({
+  color: '#4CAF50',
+  fontWeight: 'bold',
+}));
+
+const ActionButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#4CAF50',
+  color: 'white',
+  fontWeight: 'bold',
+
+  '&:hover': {
+    backgroundColor: '#45A049',
+  },
+}));
+
+const AppCard: FC<AppType> = (data) => {
   const [expanded, setExpanded] = React.useState(false);
-console.log(data.data.name)
+
+  console.log(data.data.id)
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  return (
-    <Card sx={{ width: 1000, margin: 2}}>
-      <CardHeader
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+  return (
+    <Card>
+
+      <CardHeader
+        title={
+          <HeaderTypography variant="subtitle1">{data.data.name}</HeaderTypography>
         }
-        title={data.data.name}
-        subheader={'Last update: ' + data.data.last_updated}
+        subheader={
+          <Typography variant="body2" color="textSecondary">
+            {data.data.last_updated} • {"22"} بازدید • {"majid"}
+          </Typography>
+        }
+        sx={{ backgroundColor: '#F9F9F9', paddingBottom: 1 }}
+
+
       />
-      <Box sx={{ width: 150, height: 150, margin: 2 }}>
+      <Divider />
+
+      <Box sx={{ display: 'flex', padding: 2 }}>
 
         <CardMedia
-          sx={{ objectFit: 'cover' }}
           component="img"
-          image="/images/FDM.png"
-          alt="Free Downlod Maager Logo"
+          sx={{ width: 100, height: 100, marginLeft: 2 }}
+          image={data.data.image}
+          alt={"title"}
 
         />
 
+        <CardContent sx={{ padding: 0 }}>
+          <Typography variant="body2" color="textSecondary"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 3, // تعداد خطوط مجاز
+              WebkitBoxOrient: 'vertical',
+            }}        >
+            {data.data.description}
+          </Typography>
+        </CardContent>
       </Box>
-      <CardContent>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {data.data.description}
-        </Typography>
-      </CardContent>
-      <Container maxWidth="xl" sx={{ direction: 'rtl' }}>
-        <Button variant="contained" href={data.data.download_link} >
-          download
-        </Button>
-      </Container>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        {/* <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore> */}
+
+      <Divider />
+
+      <CardActions sx={{ justifyContent: 'flex-end', backgroundColor: '#F9F9F9' }}>
+        <CustomizedDialogs
+          open={dialogOpen} onClose={handleDialogClose}
+
+          cardData={{
+            name: data.data.name,
+            description: data.data.description,
+            image: data.data.image,
+            lastUpdated: data.data.last_updated,
+            download_link: data.data.download_link
+          }}
+
+        />
+        <CardActions sx={{ justifyContent: 'flex-end', backgroundColor: '#F9F9F9' }}>
+          <ActionButton onClick={handleDialogOpen}>ادامه مطلب</ActionButton>
+        </CardActions>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
       </Collapse>
+
     </Card>
   );
 }

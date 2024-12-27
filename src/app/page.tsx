@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 
 import Header from "@/components/Header/Header"
 import AppList from '@/components/AppCard/AppList';
+import { Box } from '@mui/material';
 
 export default function Home() {
   return (
@@ -14,12 +15,14 @@ export default function Home() {
         <MovieList />
       </Container>
       <Footer caption="good by" version={9} /> */}
-      <Header />
-      <Container maxWidth="xl"  >
+      <Box bgcolor='#437593'>
+        <Header />
+        <Container maxWidth="xl"  >
 
-      <AppList/>
+          <AppList />
 
-      </Container>
+        </Container>
+      </Box>
     </>
   );
 }
